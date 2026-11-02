@@ -1,25 +1,133 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Link Bypasser V2</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #0b1020;
+  color: white;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.card {
+  width: 100%;
+  max-width: 470px;
+  background: #19233b;
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: 0 15px 45px #0008;
+}
+h1 { color: #91a5ff; margin-top: 0; }
+p { color: #b9c4dc; line-height: 1.5; }
+input {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #394969;
+  border-radius: 10px;
+  background: #0d1528;
+  color: white;
+  margin: 12px 0;
+  font-size: 15px;
+}
+button {
+  padding: 13px 17px;
+  border: 0;
+  border-radius: 10px;
+  background: #7188ff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px 3px 5px 0;
+}
+button:hover { background: #526cff; }
+#result {
+  margin-top: 22px;
+  padding: 15px;
+  background: #101a30;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+  display: none;
+}
+.small { font-size: 12px; color: #9eabc4; }
+a { color: #9eb2ff; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🔗 Link Bypasser</h1>
+  <p>Check links and preview their destinations.</p>
+
+  <input id="link" type="text"
+    placeholder="Paste your website link here">
+
+  <button onclick="checkLink()">Check Link</button>
+
+  <div id="result" aria-live="polite"></div>
+
+  <p class="small">
+    This tool checks URL format only. It does not verify
+    safety or automatically follow redirects.
+  </p>
+</div>
+
 <script>
 function checkLink() {
-  const value = document.getElementById("link").value.trim();
+  const input = document.getElementById("link").value.trim();
   const result = document.getElementById("result");
 
-  if (!value) {
-    result.textContent = "Please enter a link!";
-    return;
-  }
+  result.style.display = "block";
+  result.replaceChildren();
+
+  let url;
 
   try {
-    const url = new URL(value);
+    url = new URL(input);
 
     if (url.protocol !== "https:" && url.protocol !== "http:") {
       throw new Error();
     }
-
-    result.textContent = "Website: " + url.hostname +
-      " | Protocol: " + url.protocol;
-  } catch (error) {
-    result.textContent = "Invalid link! Try again.";
+  } catch {
+    result.textContent = "Please enter a valid HTTP or HTTPS link.";
+    return;
   }
+
+  const heading = document.createElement("h3");
+  heading.textContent = "🌐 Link Information";
+
+  const domain = document.createElement("p");
+  domain.textContent = "Website: " + url.hostname;
+
+  const protocol = document.createElement("p");
+  protocol.textContent = "Protocol: " + url.protocol;
+
+  const warning = document.createElement("p");
+  warning.textContent = "A valid URL is not necessarily a safe URL.";
+
+  const copy = document.createElement("button");
+  copy.textContent = "📋 Copy Link";
+  copy.onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(url.href);
+      copy.textContent = "Copied!";
+    } catch {
+      copy.textContent = "Copy unavailable";
+    }
+  };
+
+  const open = document.createElement("button");
+  open.textContent = "↗ Open Link";
+  open.onclick = () => window.open(url.href, "_blank", "noopener,noreferrer");
+
+  result.append(heading, domain, protocol, warning, copy, open);
 }
 </script>
+</body>
+</html>
