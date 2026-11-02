@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Link Bypasser</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #101323;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding: 35px 15px;
+    }
+    .container {
+      max-width: 450px;
+      margin: 60px auto;
+      background: #202943;
+      padding: 25px;
+      border-radius: 18px;
+    }
+    h1 { color: #8b9cff; }
+    input {
+      width: 90%;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      margin: 15px 0;
+    }
+    button {
+      padding: 13px 25px;
+      background: #647cff;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Link Bypasser 🔗</h1>
+    <p>Check your links before opening them.</p>
+
+    <input id="link" placeholder="Paste a website URL here">
+
+    <br>
+    <button onclick="checkLink()">Check Link</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function checkLink() {
+      const value = document.getElementById("link").value.trim();
+      const result = document.getElementById("result");
+
+      try {
+        const url = new URL(value);
+
+        if (!["http:", "https:"].includes(url.protocol)) {
+          throw new Error();
+        }
+
+        result.innerHTML =
+          "<h3>Link Information</h3>" +
+          "<p>Website: " + 
+          document.createTextNode(url.hostname).textContent +
+          "</p>" +
+          "<p>Protocol: " + url.protocol + "</p>" +
+          "<p>Remember: this does not guarantee the link is safe.</p>";
+      } catch {
+        result.textContent = "Please enter a valid website URL.";
+      }
+    }
+  </script>
+</body>
+</html>
